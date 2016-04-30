@@ -16,6 +16,7 @@
 
 #include "FillRawHist.h"
 #include "FillCalHist.h"
+#include "FillCommonMode.h"
 #include "FillMaxCharge.h"
 #include "FillMaxTPCCharge.h"
 
@@ -36,6 +37,8 @@ TH1F *S3;
 TH1F *C1;
 TH1F *C2i;
 TH1F *C2o;
+TH2F *C2iVsC2o;
+TH2F *C2iVsC2oTimed;
 TH1F *phase1;
 TH1F *phase2;
 
@@ -49,6 +52,13 @@ TH2F *C1tVsC2ot;
 TH2F *C1tVsC1;
 TH1F *phase1t;
 TH1F *phase2t;
+
+TH1F *S1Count;
+TH1F *S2Count;
+TH1F *S3Count;
+TH1F *C1Count;
+TH1F *C2iCount;
+TH1F *C2oCount;
 
 //  SRS stuff...
 TH1F *h1a; // The waveform...
@@ -118,12 +128,14 @@ int pinit()
 
   //  These histograms will have pulse heights interpreted from the
   //  waveform using the ATrace class. (not relevant for phase signals).
-  S1  = new TH1F ( "S1","; S1 pulse height [mV];# entries",  100, -0.5, 4096.5); 
-  S2  = new TH1F ( "S2","; S2 pulse height [mV];# entries",  100, -0.5, 4096.5); 
-  S3  = new TH1F ( "S3","; S3 pulse height [mV];# entries",  100, -0.5, 4096.5); 
-  C1  = new TH1F ( "C1","; C1 pulse height [mV];# entries",  100, -0.5, 4096.5); 
-  C2i = new TH1F ( "C2i","; C2-inner height [mV];# entries", 100, -0.5, 4096.5); 
-  C2o = new TH1F ( "C2o","; C2-outer height [mV];# entries", 100, -0.5, 4096.5); 
+  S1  = new TH1F ( "S1","; S1 pulse height [mV];# entries",  100, -0.5, 4095.5); 
+  S2  = new TH1F ( "S2","; S2 pulse height [mV];# entries",  100, -0.5, 4095.5); 
+  S3  = new TH1F ( "S3","; S3 pulse height [mV];# entries",  100, -0.5, 4095.5); 
+  C1  = new TH1F ( "C1","; C1 pulse height [mV];# entries",  4096, -0.5, 4095.5); 
+  C2i = new TH1F ( "C2i","; C2-inner height [mV];# entries", 4096, -0.5, 4095.5); 
+  C2o = new TH1F ( "C2o","; C2-outer height [mV];# entries", 4096, -0.5, 4095.5); 
+  C2iVsC2o = new TH2F ( "C2iVsC2o","C2iVsC2o", 4096, -0.5, 4095.5, 4096, -0.5, 4095.5);
+  C2iVsC2oTimed = new TH2F ( "C2iVsC2oTimed","C2iVsC2oTimed", 4096, -0.5, 4095.5, 4096, -0.5, 4095.5); 
 
   //  These histograms have time information interpreted from the
   //  waveform using the ATrace class.
@@ -133,6 +145,14 @@ int pinit()
   C1t  = new TH1F ( "C1t","; C1 time [bins];# entries",        1024, -0.5, 1023.5); 
   C2it = new TH1F ( "C2it","; C2-inner time [bins];# entries", 1024, -0.5, 1023.5); 
   C2ot = new TH1F ( "C2ot","; C2-outer time [bins];# entries", 1024, -0.5, 1023.5); 
+
+  //  Here we look for "extra" particles in the event and reject them...
+  S1Count  = new TH1F ( "S1Count","S1Count",10, -0.5, 9.5); 
+  S2Count  = new TH1F ( "S2Count","S2Count",10, -0.5, 9.5); 
+  S3Count  = new TH1F ( "S3Count","S3Count",10, -0.5, 9.5); 
+  C1Count  = new TH1F ( "C1Count","C1Count",10, -0.5, 9.5); 
+  C2iCount  = new TH1F ( "C2iCount","C2iCount",10, -0.5, 9.5); 
+  C2oCount  = new TH1F ( "C2oCount","C2oCount",10, -0.5, 9.5); 
 
   //  These histograms have time information interpreted from the
   //  waveform using the ATrace class.
@@ -308,6 +328,7 @@ int process_event (Event * e)
       C1->Fill( Scott->theTraces[3]->PulseHeight());
       C2i->Fill(Scott->theTraces[4]->PulseHeight());
       C2o->Fill(Scott->theTraces[5]->PulseHeight());
+      C2iVsC2o->Fill(Scott->theTraces[5]->PulseHeight(), Scott->theTraces[4]->PulseHeight());
       
       double RefTime = Scott->theTraces[2]->PulseTime()-600.0;
       S1t->Fill( Scott->theTraces[0]->PulseTime()-RefTime);
@@ -316,9 +337,22 @@ int process_event (Event * e)
       C1t->Fill( Scott->theTraces[3]->PulseTime()-RefTime);
       C2it->Fill(Scott->theTraces[4]->PulseTime()-RefTime);
       C2ot->Fill(Scott->theTraces[5]->PulseTime()-RefTime);
+      double C2it = Scott->theTraces[4]->PulseTime()-RefTime;
+      double C2ot = Scott->theTraces[5]->PulseTime()-RefTime;
+      if (C2ot>497 && C2ot<504 )
+	{
+	  C2iVsC2oTimed->Fill(Scott->theTraces[5]->PulseHeight(), Scott->theTraces[4]->PulseHeight());
+	}
 
       C1tVsC2ot->Fill(Scott->theTraces[5]->PulseTime()-RefTime, Scott->theTraces[3]->PulseTime()-RefTime);
       C1tVsC1->Fill  (Scott->theTraces[3]->PulseHeight(),       Scott->theTraces[3]->PulseTime()-RefTime);
+
+      S1Count->Fill(Scott->theTraces[0]->PeakCount(400,800));
+      S2Count->Fill(Scott->theTraces[1]->PeakCount(250,500));
+      S3Count->Fill(Scott->theTraces[2]->PeakCount(200,400));
+      C1Count->Fill(Scott->theTraces[3]->PeakCount(75,150));
+      C2iCount->Fill(Scott->theTraces[4]->PeakCount(75,150));
+      C2oCount->Fill(Scott->theTraces[5]->PeakCount(400,800));
 
       delete p1;
       
@@ -370,7 +404,7 @@ int process_event (Event * e)
 	}
       
       int nhb = p->iValue(0,"NHYBRIDS");
-      if (nhb>3)
+      if (nhb>4)
 	{
 	  
 	  
@@ -437,7 +471,6 @@ int process_event (Event * e)
 		}
 	    }
 
-	  /*
 	  for (int ibin = 1; ibin<255; ibin++)
 	    {
 	      if ( (h1e->GetBinContent(ibin-1) < 1220) &
@@ -448,7 +481,6 @@ int process_event (Event * e)
 		  break;
 		}
 	    }
-	  */
 
 	  //  TPC Hybrids
 	  for (int JINDEX=0; JINDEX<4; JINDEX++)
@@ -463,7 +495,6 @@ int process_event (Event * e)
 	    }
 
 	  //  For now we'll begin with hybrid #4 which is the HBD...
-	  /*
 	  int JINDEX=4;
 	  for (int j=0; j<128; j++)
 	    {
@@ -472,27 +503,26 @@ int process_event (Event * e)
 		  APad::Raw[j].push_back(p->iValue(j,i,JINDEX*2));  // NOTE weird 2X indexing...
 		}
 	    }
-	  */
 	  
 	  /* process HBD data */
-	  //APad::DetermineCommonMode();
 	  AZig::ApplyCalibration();
 	  for(int i=0; i<Scott->theZigs.size(); i++)
 	    Scott->theZigs[i]->DetermineQ();	  	  
 	  
-	  /*
+	  APad::DetermineCommonMode();
 	  APad::ApplyCalibration();
 	  for(int i=0; i<Scott->thePads.size(); i++)
 	    Scott->thePads[i]->DetermineQ();
-	  */
 
-	  //FillRawHist();
+	  FillCommonMode();
+
+	  FillRawHist();
 	  FillRawZigHist();
 
-	  //FillCalHist();
+	  FillCalHist();
 	  FillCalZigHist();
 
-	  //FillMaxCharge();
+	  FillMaxCharge();
 	  FillMaxTPCCharge();
 	}      
       else

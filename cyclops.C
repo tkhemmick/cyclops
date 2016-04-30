@@ -79,6 +79,7 @@ void cyclops::ClearTheDetector()
     }
 
   //  APad static variables...
+  APad::CommonMode.clear();
   for (int i=0; i<NumberOfPads; i++)
     {
       APad::Raw[i].clear();

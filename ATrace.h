@@ -25,11 +25,11 @@ class ATrace
   std::vector<double> voltage;
 
   double FindMaximum(int n);  
-  void FitLeftEdge(int inset=0);
+  void   FitLeftEdge(int inset=0);
   double PulseHeight(){return height;}
   double PulseTime(){return time;}
+  int    PeakCount(double low, double high);
 
-  //  Nice is we can see this!
   TH1D *trace;
 
   static bool FastEdgeFinder;

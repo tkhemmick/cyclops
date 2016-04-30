@@ -78,7 +78,6 @@ double ATrace::FindMaximum(int n)
 
 void ATrace::FitLeftEdge(int inset)
 {
-
   RestoreBaseline();
   
   //  Assumes negative traces and flips them to be positive histograms.
@@ -142,4 +141,31 @@ void ATrace::RestoreBaseline()
       voltage[i] = voltage[i] - median;
     }  
 
+}
+
+int ATrace::PeakCount(double low, double high)
+{
+  //  This routine assumes that the baseline of the trace
+  //  has already been restored.  Thus, it must be called AFTER the
+  //  FitLeftEdge() routine.
+  //
+  //  This inter-linkage should be resolved more elegantly in the future...
+
+  int count = 0;
+  bool inside = false;
+
+  for(int i=0; i<voltage.size(); i++)
+    {
+      if (!inside && voltage[i] < -high)
+	{
+	  count ++;
+	  inside=true;
+	}
+      if (inside && voltage[i] > -low)
+	{
+	  inside=false;
+	}
+    }  
+
+  return count;
 }

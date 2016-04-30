@@ -93,7 +93,7 @@ public:
   static double Pedestals[NumberOfPads];
   static double Sigmas[NumberOfPads];
   static double Gains[NumberOfPads];
-  static double CommonMode;
+  static std::vector<double> CommonMode;  // There is one common mode value per TIME SLICE.
 
   //  Methods for applying calibrations...
   static void WriteCalibration();

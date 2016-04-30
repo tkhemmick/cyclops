@@ -11,10 +11,14 @@
 #pragma link C++ function FillRawHist;
 #pragma link C++ function FillRawZigHist;
 #pragma link C++ function FillCalHist;
+#pragma link C++ function FillCommonMode;
 #pragma link C++ function FillMaxCharge;
 #pragma link C++ function FillMaxTPCCharge;
 #pragma link C++ function FitPedestals;
 #pragma link C++ function FitZigPedestals;
+#pragma link C++ function IsBeam;
+#pragma link C++ function ChrHit;
+#pragma link C++ function ChrMiss;
 #pragma link C++ function prdfopen;
 #pragma link C++ function prdfclose;
 

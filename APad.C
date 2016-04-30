@@ -13,6 +13,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <algorithm>
 #include "TPolyLine.h"
 #include "TH1D.h"
 #include "TF1.h"
@@ -29,7 +30,7 @@ std::vector<double> APad::Cal[NumberOfPads];
 double APad::Pedestals[NumberOfPads] = {0};
 double APad::Sigmas[NumberOfPads] = {0};
 double APad::Gains[NumberOfPads] = {0};
-double APad::CommonMode = 0;
+std::vector<double> APad::CommonMode;
 
 TH1D *APad::Pulse=0; /* @TODO Do we need this? */
 TF1  *APad::blue=0; /* @TODO Do we need this? */
@@ -119,29 +120,54 @@ void APad::ReadCalibration()
 
 void APad::DetermineCommonMode()
 {
-  string method = CommonModeMethod;
-  cout << "It might be nice to implement CommonMode for the Pads BEFORE you call it." << endl;
-  CommonMode = 0.0;
+  //string method = CommonModeMethod;
+
+  cyclops *Scott = cyclops::instance();
+
+  CommonMode.clear();;
+
+  vector<double> values;
+  for (int i=0; i<Raw[0].size(); i++) //loop over slices
+    {
+      values.clear();
+      for (int j=0; j<Scott->thePads.size(); j++) // loop over INSTRUMENTED pads
+	{
+	  int index = Scott->thePads[j]->MyID();
+	  values.push_back(Pedestals[index] - Raw[index][i]);
+	}
+      sort(values.begin(), values.end());
+      int mid = Scott->thePads.size()/2.0;
+      double average3 = (values[mid-1]+values[mid]+values[mid+1])/3.0;
+      CommonMode.push_back( average3 );
+    }
 }
 
 void APad::ApplyCalibration()
 {
-  /* loop over all pad types */
+  /* loop over all pads */
   for (int i=0; i<NumberOfPads; i++)
     {
       Cal[i].clear();
       for(int j=0; j<Raw[i].size(); j++)
 	{
-	  //cout << " i " << i;
-	  //cout << " j " << j;
-	  //cout << " Gain " << Gains[i];
-	  //cout << " Pedestals " << Pedestals[i];
-	  //cout << " Raw[i][j] " << Raw[i][j];
-	  //cout << " COmmnonMode " << CommonMode;
-	  //cout << endl;
-	  Cal[i].push_back(Gains[i]*(Pedestals[i]-Raw[i][j]-CommonMode));
+	  Cal[i].push_back(Gains[i]*(Pedestals[i]-Raw[i][j]));
 	}
     }  
+
+  /* loop over INSTRUMENTED pads for common mode */
+  cyclops *Scott = cyclops::instance();
+  for (int i=0; i<Scott->thePads.size(); i++)
+    {
+      int index = Scott->thePads[i]->MyID();
+      for(int j=0; j<Raw[index].size(); j++)
+	{
+	  if (CommonMode.size() > j)
+	    {
+	      Cal[index][j] = Cal[index][j]-(Gains[index]*CommonMode[j]);
+	    }
+	}
+    }  
+
 }
 
 void APad::DetermineQ()

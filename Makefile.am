@@ -21,8 +21,10 @@ include_HEADERS = \
   MyFavoriteMartin.h \
   FillRawHist.h \
   FillCalHist.h \
+  FillCommonMode.h \
   FillMaxCharge.h \
   FillMaxTPCCharge.h \
+  PID.h \
   cyclops.h \
   caen_correction.h \
   prdfoStream.h \
@@ -35,8 +37,10 @@ libcyclops_la_SOURCES = \
   MyFavoriteMartin.C \
   FillRawHist.C \
   FillCalHist.C \
+  FillCommonMode.C \
   FillMaxCharge.C \
   FillMaxTPCCharge.C \
+  PID.C \
   ATrace.C \
   caen_correction.cc \
   prdfoStream.cc \
@@ -58,8 +62,10 @@ cyclops_Dict.C: \
   cyclops.h \
   FillRawHist.h \
   FillCalHist.h \
+  FillCommonMode.h \
   FillMaxCharge.h \
   FillMaxTPCCharge.h \
+  PID.h \
   MyFavoriteMartin.h \
   caen_correction.h \
   cyclopsLinkDef.h

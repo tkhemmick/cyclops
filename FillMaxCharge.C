@@ -12,6 +12,7 @@
 #include "TH1D.h"
 #include "TH2D.h"
 #include "APad.h"
+#include "PID.h"
 
 #include "cyclops.h"
 
@@ -27,6 +28,8 @@ TH2D *Psych;
 TH1D *NumberInTime=0;
 TH1D *OneChargeInTime=0;
 TH1D *TotalChargeInTime=0;
+TH1D *TotalChargeInTime_Hit=0;
+TH1D *TotalChargeInTime_Miss=0;
 TH1D *MaxMaxCharge=0;
 TH2D *MaxMaxChargeVsTime=0;
 TH2D *MaxMaxChargeVsNeighbor=0;
@@ -39,6 +42,8 @@ using namespace std;
 void FillMaxCharge()
 {
 
+  if (!IsBeam()) return;
+
   int nTime = APad::Cal[0].size();
   double left = -0.5;
   double right = (double)nTime - 0.5;
@@ -48,6 +53,8 @@ void FillMaxCharge()
     {
       NumberInTime = new TH1D("NumberInTime","NumberInTime",9,-0.5,8.5);
       TotalChargeInTime = new TH1D("TotalChargeInTime","TotalChargeInTime",300,-300.5,3000.5);
+      TotalChargeInTime_Hit  = new TH1D("TotalChargeInTime_Hit","TotalChargeInTime_Hit",300,-300.5,3000.5);
+      TotalChargeInTime_Miss = new TH1D("TotalChargeInTime_Miss","TotalChargeInTime_Miss",300,-300.5,3000.5);
       OneChargeInTime = new TH1D("OneChargeInTime","OneChargeInTime",300,-300.5,3000.5);
       MaxMaxCharge = new TH1D("MaxMaxCharge","MaxMaxCharge",300,-300.5,3000.5);
       MaxMaxChargeVsTime = new TH2D("MaxMaxChargeVsTime","MaxMaxChargeVsTime",300,-300.5,3000.5,nTime,left,right);
@@ -143,6 +150,8 @@ void FillMaxCharge()
 	}
     }
   TotalChargeInTime->Fill(TOTAL);
+  if (ChrHit() ) TotalChargeInTime_Hit ->Fill(TOTAL);
+  if (ChrMiss()) TotalChargeInTime_Miss->Fill(TOTAL);
   NumberInTime->Fill(NUMBER);
 
   if (NUMBER==1) OneChargeInTime->Fill(TOTAL);
