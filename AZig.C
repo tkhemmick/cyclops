@@ -14,6 +14,7 @@
 #include <fstream>
 #include <string>
 #include "TPolyLine.h"
+#include "TMarker3DBox.h"
 #include "TH1D.h"
 #include "TF1.h"
 #include "TSpectrum.h"
@@ -74,6 +75,16 @@ void AZig::Draw( double MAX )
       aziga->SetFillColor(color((int)(MAX+0.5)));
       aziga->Draw("");
     }
+
+}
+
+void AZig::Draw3D( double MAX )
+{
+  TMarker3DBox *eye = new TMarker3DBox(XCenter()  ,  0        ,ZCenter()  , // Fake!!!
+				       (x2-x1)/2.2,(x2-x1)/2.0,(z2-z1)/2.2, // Fake!!!
+				       0,0);
+  eye->SetLineColor( color((int)(MAX+0.5)) );  
+  eye->Draw();
 
 }
 

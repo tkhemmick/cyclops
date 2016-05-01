@@ -18,6 +18,7 @@
 #include "TH1D.h"
 #include "TF1.h"
 #include "TSpectrum.h"
+#include "TMarker3DBox.h"
 
 using namespace std;
 int APad::nextID=0;
@@ -39,14 +40,15 @@ double APad::SigmaCut=3;
 double APad::PulseCut=40;
 string APad::CommonModeMethod="gauss";
 
-APad::APad(double X1, double Y1, double X2, double Y2, double Z0)
+APad::APad(double X1, double Y1, double X2, double Y2, double Z1, double Z2)
 {
   // Set the patameters define the pad plane space.
   x1 = X1;
   y1 = Y1;
   x2 = X2;
   y2 = Y2;
-  z0 = Z0;
+  z1 = Z1;
+  z2 = Z2;
   q  = 0;
 
   // If there are "empty" channels, the user will
@@ -75,6 +77,16 @@ void APad::Draw( double MAX )
       apada->SetFillColor(color((int)(MAX+0.5)));
       apada->Draw("");
     }
+
+}
+
+void APad::Draw3D( double MAX )
+{
+  TMarker3DBox *eye = new TMarker3DBox(XCenter(),YCenter(),ZCenter(),
+				       (x2-x1)/2.2,(y2-y1)/2.2,(z2-z1)/2.2,
+				       0,0);
+  eye->SetLineColor( color((int)(MAX+0.5)) );  
+  eye->Draw();
 
 }
 

@@ -19,6 +19,7 @@
 #pragma link C++ function IsBeam;
 #pragma link C++ function ChrHit;
 #pragma link C++ function ChrMiss;
+#pragma link C++ function DisplayEvent;
 #pragma link C++ function prdfopen;
 #pragma link C++ function prdfclose;
 

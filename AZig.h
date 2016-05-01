@@ -57,6 +57,7 @@ public:
 
   // Graphics:
   virtual void Draw(double);
+  virtual void Draw3D(double);
   int color(int);
 
   double NumSigma() {return q/Gains[myID]/Sigmas[myID];}

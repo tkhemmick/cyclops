@@ -113,14 +113,15 @@ void cyclops::CreateHBD()
   int ChannelIndex[9]={14,12,1,  11,4,10,  3,9,2};
   
   // hard-coded z position of the HBD
-  double z0 = 0.;
+  double z0 = 29.6;
+  double z1 = 29.7;
 
   double delta = 10.0/3.0;  // 10 cm/3 pads
   double x0=-5;
   double y0=delta/2.0;  
   for (int i=0; i<9; i++)
     {
-      APad *cell = new APad(x0,y0,x0+delta,y0+delta,z0);
+      APad *cell = new APad(x0,y0,x0+delta,y0+delta,z0,z1);
       cell->SetMyID(ChannelIndex[i]);
       thePads.push_back(cell);
       x0 += delta;
@@ -146,7 +147,7 @@ void cyclops::CreateTPC()
 	{
 	  double x0 = xmap[i]*DeltaX - 5.0;
 	  double z0 = ymap[i]*DeltaZ - 5.0;
-	  AZig *cell = new AZig(x0,z0,x0+DeltaX,z0+DeltaZ);
+	  AZig *cell = new AZig(-x0, 5.0+z0, -(x0+DeltaX), 5.0+z0+DeltaZ); //shift coordinates...
 	  cell->SetMyID(i);
 	  theZigs.push_back(cell);
 	}

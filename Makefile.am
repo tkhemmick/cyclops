@@ -25,6 +25,7 @@ include_HEADERS = \
   FillMaxCharge.h \
   FillMaxTPCCharge.h \
   PID.h \
+  DisplayEvent.h \
   cyclops.h \
   caen_correction.h \
   prdfoStream.h \
@@ -41,6 +42,7 @@ libcyclops_la_SOURCES = \
   FillMaxCharge.C \
   FillMaxTPCCharge.C \
   PID.C \
+  DisplayEvent.C \
   ATrace.C \
   caen_correction.cc \
   prdfoStream.cc \
@@ -66,6 +68,7 @@ cyclops_Dict.C: \
   FillMaxCharge.h \
   FillMaxTPCCharge.h \
   PID.h \
+  DisplayEvent.h \
   MyFavoriteMartin.h \
   caen_correction.h \
   cyclopsLinkDef.h

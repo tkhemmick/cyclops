@@ -28,7 +28,7 @@ class TF1;
 class APad
 {
 public:
-  APad(double, double, double, double, double);
+  APad(double, double, double, double, double, double);
   virtual ~APad() {}
 
   void Clear() {q=0;}
@@ -41,7 +41,7 @@ public:
   // gets...
   double const XCenter()  {return (x1+x2)/2.0;}
   double const YCenter()  {return (y1+y2)/2.0;}
-  double const ZCenter()  {return z0;}
+  double const ZCenter()  {return (z1+z2)/2.0;}
   double Q            ()  {return q;}
   double T            ()  {return t;} /* @TODO Do we need this? */
   int MyID            ()  {return myID;}
@@ -50,6 +50,7 @@ public:
 
   // Graphics:
   virtual void Draw(double);
+  virtual void Draw3D(double);
   int color(int);
 
   double NumSigma() {return q/Gains[myID]/Sigmas[myID];}
@@ -109,13 +110,13 @@ protected:
   double y1;
   double x2;
   double y2;
-  double z0;
+  double z1;
+  double z2;
   double t;  /* @TODO Do we need this? */
   double q;
 
   static int nextID;
   int myID;
-
 };
 
 #endif /* __APAD_H__ */
