@@ -82,8 +82,10 @@ void APad::Draw( double MAX )
 
 void APad::Draw3D( double MAX )
 {
-  TMarker3DBox *eye = new TMarker3DBox(XCenter(),YCenter(),ZCenter(),
-				       (x2-x1)/2.2,(y2-y1)/2.2,(z2-z1)/2.2,
+  //  Display is prettiest if we "cycle" the coordinates.
+  //  This means treating tyhe arguments as (z,x,y)...
+  TMarker3DBox *eye = new TMarker3DBox(ZCenter()  ,XCenter()   ,YCenter() ,
+				       (z2-z1)/2.2,(x2-x1)/2.2,(y2-y1)/2.2,
 				       0,0);
   eye->SetLineColor( color((int)(MAX+0.5)) );  
   eye->Draw();

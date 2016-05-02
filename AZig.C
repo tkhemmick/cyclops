@@ -80,10 +80,13 @@ void AZig::Draw( double MAX )
 
 void AZig::Draw3D( double MAX )
 {
-  TMarker3DBox *eye = new TMarker3DBox(XCenter()  ,  0        ,ZCenter()  , // Fake!!!
-				       (x2-x1)/2.2,(x2-x1)/2.0,(z2-z1)/2.2, // Fake!!!
+  //  Display is prettiest if we "cycle" the coordinates.
+  //  This means treating tyhe arguments as (z,x,y)...
+  TMarker3DBox *eye = new TMarker3DBox(ZCenter()  ,XCenter()  ,  0        , // Fake!!!
+				       (z2-z1)/2.2,(x2-x1)/2.2,(x2-x1)/2.0, // Fake!!!
 				       0,0);
   eye->SetLineColor( color((int)(MAX+0.5)) );  
+  eye->SetLineWidth(1); //pixels
   eye->Draw();
 
 }

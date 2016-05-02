@@ -29,11 +29,12 @@ using namespace std;
 void DisplayEvent(double MIN, double MAX, bool drawregions=false)
 {
   // Make a pretty Canvas and 3D viewing area...
-  static TCanvas *PadCanvas = new TCanvas("ThePadCanvas", "TPC HBD EVent Display", 0,0, 750, 750);/// pixels
+  static TCanvas *PadCanvas = new TCanvas("ThePadCanvas", "TPC HBD EVent Display", 0,0, 1000, 1000);/// pixels
   PadCanvas->cd(); //Hey, root--put stuff on THIS canvas.  
   PadCanvas->Clear();
   TView3D *view = (TView3D*) TView::CreateView(1);
-  view->SetRange(-8,-8,-5,8,8,35);
+  double Scale = 32.0/10.4;
+  view->SetRange(-1,-5.2*Scale,-5.2*Scale,31,5.2*Scale,5.2*Scale);
 
   cyclops *Scott = cyclops::instance();
   //  Display the HBD hits in 3D
@@ -51,32 +52,32 @@ void DisplayEvent(double MIN, double MAX, bool drawregions=false)
   
   // Create a PolyLine3D that will "surround" the active area with a 1 cm buffer
   TPolyLine3D *enter = new TPolyLine3D(5);
-  enter->SetPoint(0, -6,  -6,  -1);
-  enter->SetPoint(1,  6,  -6,  -1);
-  enter->SetPoint(2,  6,   6,  -1);
-  enter->SetPoint(3, -6,   6,  -1);
-  enter->SetPoint(4, -6,  -6,  -1);
+  enter->SetPoint(0, -1, -5.1,  -5.1);
+  enter->SetPoint(1, -1,  5.1,  -5.1);
+  enter->SetPoint(2, -1,  5.1,   5.1);
+  enter->SetPoint(3, -1, -5.1,   5.1);
+  enter->SetPoint(4, -1, -5.1,  -5.1);
 
   TPolyLine3D *exit = new TPolyLine3D(5);
-  exit->SetPoint(0, -6,  -6,  31);
-  exit->SetPoint(1,  6,  -6,  31);
-  exit->SetPoint(2,  6,   6,  31);
-  exit->SetPoint(3, -6,   6,  31);
-  exit->SetPoint(4, -6,  -6,  31);
+  exit->SetPoint(0, 31, -5.1,  -5.1);
+  exit->SetPoint(1, 31,  5.1,  -5.1);
+  exit->SetPoint(2, 31,  5.1,   5.1);
+  exit->SetPoint(3, 31, -5.1,   5.1);
+  exit->SetPoint(4, 31, -5.1,  -5.1);
 
   TPolyLine3D *top = new TPolyLine3D(5);
-  top->SetPoint(0, -6,   6,  -1);
-  top->SetPoint(1, -6,   6,  31);
-  top->SetPoint(2,  6,   6,  31);
-  top->SetPoint(3,  6,   6,  -1);
-  top->SetPoint(4, -6,   6,  -1);
+  top->SetPoint(0,  -1, -5.1,   5.1);
+  top->SetPoint(1,  31, -5.1,   5.1);
+  top->SetPoint(2,  31,  5.1,   5.1);
+  top->SetPoint(3,  -1,  5.1,   5.1);
+  top->SetPoint(4,  -1, -5.1,   5.1);
 
   TPolyLine3D *bot = new TPolyLine3D(5);
-  bot->SetPoint(0, -6,  -6,  -1);
-  bot->SetPoint(1, -6,  -6,  31);
-  bot->SetPoint(2,  6,  -6,  31);
-  bot->SetPoint(3,  6,  -6,  -1);
-  bot->SetPoint(4, -6,  -6,  -1);
+  bot->SetPoint(0,  -1, -5.1,  -5.1);
+  bot->SetPoint(1,  31, -5.1,  -5.1);
+  bot->SetPoint(2,  31,  5.1,  -5.1);
+  bot->SetPoint(3,  -1,  5.1,  -5.1);
+  bot->SetPoint(4,  -1, -5.1,  -5.1);
 
   // Draw the perimeter...
   enter->Draw();
